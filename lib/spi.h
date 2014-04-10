@@ -30,12 +30,14 @@ public:
     int setLSBFirst(bool lsb_first);
     int setBitsPerWord(int bits);
     int setSpeed(uint32_t speed);
+    int setDelay(uint32_t delay);
 
 private:
     uint8_t mode;
     uint8_t bpw;
     bool lsb_first;
     uint32_t speed;
+    uint32_t delay;
     bool active;
     int fd;
 };

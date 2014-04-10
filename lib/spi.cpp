@@ -161,6 +161,11 @@ int SPI::setSpeed(uint32_t speed)
     return 1;
 }
 
+int SPI::setDelay(uint32_t delay)
+{
+    this->delay = delay;
+}
+
 int SPI::write(uint8_t wbuf[], int len)
 {
     return ::write(fd, wbuf, len);
@@ -178,7 +183,7 @@ int SPI::xfer1(uint8_t wbuf[], uint8_t rbuf[], int len)
     txinfo.tx_buf = (__u64 ) wbuf;
     txinfo.rx_buf = (__u64 ) rbuf;
     txinfo.len = len;
-    txinfo.delay_usecs = 0;
+    txinfo.delay_usecs = delay;
     txinfo.speed_hz = speed;
     txinfo.bits_per_word = bpw;
     txinfo.cs_change = 1;
