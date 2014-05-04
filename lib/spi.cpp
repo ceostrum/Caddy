@@ -24,6 +24,7 @@ SPI::SPI()
     mode = 0;
     bpw = 0;
     speed = 0;
+    delay = 0;
     fd = -1;
     lsb_first = false;
 }
@@ -177,29 +178,25 @@ int SPI::read(uint8_t rbuf[], int len)
     return ::read(fd, rbuf, len);
 }
 
-int SPI::xfer1(uint8_t wbuf[], uint8_t rbuf[], int len)
+int SPI::xfer(uint8_t wbuf[], int wlen, uint8_t rbuf[], int rlen)
 {
-    struct spi_ioc_transfer txinfo;
-    txinfo.tx_buf = (__u64 ) wbuf;
-    txinfo.rx_buf = (__u64 ) rbuf;
-    txinfo.len = len;
-    txinfo.delay_usecs = delay;
-    txinfo.speed_hz = speed;
-    txinfo.bits_per_word = bpw;
-    txinfo.cs_change = 1;
+    struct spi_ioc_transfer xfer[2] = {0};
 
-    int r = ioctl(fd, SPI_IOC_MESSAGE(1), &txinfo);
+    xfer[0].tx_buf = (__u64 ) wbuf;
+    xfer[0].len = wlen;
+
+    xfer[1].rx_buf = (__u64 ) rbuf;
+    xfer[1].len = rlen;
+
+    int r = ioctl(fd, SPI_IOC_MESSAGE(2), xfer);
     if (r < 0)
     {
-        printf("ioctl(fd, SPI_IOC_MESSAGE(1), &txinfo): %s (len=%d)\n",
-                strerror(r), len);
+        printf("ioctl(fd, SPI_IOC_MESSAGE(N), xfer): %s (len=%d)\n",
+                strerror(r), wlen);
         return r;
     }
 
-    //deactivate CS line
-    //uint8_t tmp;
-    //::read(fd, &tmp, 0);
-    return len;
+    return r;
 }
 
 SPI::~SPI()

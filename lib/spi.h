@@ -22,7 +22,7 @@ public:
     int close();
     int read(uint8_t read[], int len);
     int write(uint8_t write[], int len);
-    int xfer1(uint8_t write[], uint8_t read[], int len);
+    int xfer(uint8_t write[], int wlen, uint8_t read[], int rlen);
 
     int setMode(uint8_t mode);
     int setClockPolarity(uint8_t pol);
